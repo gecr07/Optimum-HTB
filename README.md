@@ -65,6 +65,8 @@ systeminfo
 net user
 net localgroup
 netstat -ano
+whoami /priv
+whoami /all #miembro de que grupos
 ```
 
 Ahora bajamos el Winpeas.exe y ejecutamos aunque como es una maquina vieja probamos con los exploits para esto tenemos varias alternativas...
@@ -90,6 +92,28 @@ Find-AllVulns
 > https://github.com/rasta-mouse/Sherlock
 
 ![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/bcbf5fdf-460a-4ae5-a42d-cf5a02447281)
+
+
+## Windows-Exploit-Suggester
+
+Una de las mejores tools porque usas el output de systeminfo 
+
+![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/c717e880-23ef-4f44-9e30-df3b1ada38f6)
+
+
+```
+./windows-exploit-suggester.py --update
+./windows-exploit-suggester.py --database 2014-06-06-mssb.xlsx --systeminfo win7sp1-systeminfo_output.txt
+```
+
+> https://github.com/AonCyberLabs/Windows-Exploit-Suggester
+
+## Exploits ya compilados windows
+
+Esta pagina es propiedad de offesive y tiene muchos exploits ya compilados
+
+> https://gitlab.com/exploit-database/exploitdb-bin-sploits
+
 
 Encontramos que tiene una vulnerabildiad a MS16-032 la primera version genera una shell pero ni lanzandola con nc pude hacerla jalar por lo tanto use la version modificada por el equipo de empire
 
